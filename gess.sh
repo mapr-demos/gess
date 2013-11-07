@@ -16,7 +16,7 @@ function usage() {
 }
 
 function start_gess() {
-	nohup python scripts/gess-main.py > $1 &> $1 &
+	nohup python scripts/gess-main.py &> $1 &
 	echo $! > $GESS_PID
 }
 

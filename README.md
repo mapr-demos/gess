@@ -14,7 +14,7 @@ Then, check if `gess` is working fine:
 
 ## To Do
 
-* Provide stats (fintrans per second, overall count, kB/s)
+* Improve stats output format (TSV, dim table)
 * Implement throttling
 * Implement multi-gess (launch X instances of gess-main in range of ports) 
 
