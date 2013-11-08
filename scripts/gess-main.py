@@ -37,7 +37,7 @@ else:
 # creates a single financial transaction
 def create_fintran():
   fintran = {
-    'timestamp' : str(datetime.datetime.now()),
+    'timestamp' : str(datetime.datetime.now().isoformat()),
     'transaction_id' : random.randint(1, 100000),
     'account_from' : random.randint(1, 1000),
     'account_to' : random.randint(1, 1000),
