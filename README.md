@@ -17,14 +17,13 @@ Once active, `gess` will stream financial transactions in a line-oriented,
 JSON-formatted fashion on default port `6900` via UDP 
 (which you can observe as the output of `dummy_gess_sink.sh`):
 
-    {'timestamp': '2013-11-08T10:53:03.242662', 'amount': 6071441, 'account_from': 203, 'transaction_id': 93850, 'account_to': 261}
-    {'timestamp': '2013-11-08T10:53:03.242758', 'amount': 256516, 'account_from': 329, 'transaction_id': 8337, 'account_to': 605}
-    {'timestamp': '2013-11-08T10:53:03.242851', 'amount': 594838, 'account_from': 138, 'transaction_id': 22413, 'account_to': 376}
-    {'timestamp': '2013-11-08T10:53:03.242945', 'amount': 4540650, 'account_from': 698, 'transaction_id': 20910, 'account_to': 885}
-    {'timestamp': '2013-11-08T10:53:03.243040', 'amount': 3073270, 'account_from': 534, 'transaction_id': 63642, 'account_to': 947}    ...
+    {'timestamp': '2013-11-08T10:58:19.668225', 'amount': 1315372, 'account_from': 335, 'transaction_id': '0888199f-b65c-49b8-a816-719b90308c62', 'account_to': 979}
+    {'timestamp': '2013-11-08T10:58:19.668396', 'amount': 7141834, 'account_from': 84, 'transaction_id': '8102c772-48e9-4a2f-9b0a-7ab78d8875c0', 'account_to': 218}
+    {'timestamp': '2013-11-08T10:58:19.668565', 'amount': 7609895, 'account_from': 259, 'transaction_id': '5ca91f40-3714-41b3-bdc2-4bb528c196ec', 'account_to': 926}
+    {'timestamp': '2013-11-08T10:58:19.668733', 'amount': 3258696, 'account_from': 1, 'transaction_id': '82e130c0-57c9-44d4-8575-d7cc620ccd41', 'account_to': 280}
+    {'timestamp': '2013-11-08T10:58:19.668900', 'amount': 5678310, 'account_from': 524, 'transaction_id': 'd3355a52-2c56-4855-9499-81ff4a67eb1e', 'account_to': 588}
     ...
     
-
 ## Understanding the runtime statistics
 
 In parallel to the data streaming, `gess` will output runtime statistics into

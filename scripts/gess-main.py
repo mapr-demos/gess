@@ -16,6 +16,7 @@ import string
 import datetime
 import json
 import random
+import uuid
 
 from os import curdir, pardir, sep
 
@@ -38,7 +39,7 @@ else:
 def create_fintran():
   fintran = {
     'timestamp' : str(datetime.datetime.now().isoformat()),
-    'transaction_id' : random.randint(1, 100000),
+    'transaction_id' : str(uuid.uuid4()),
     'account_from' : random.randint(1, 1000),
     'account_to' : random.randint(1, 1000),
     'amount' : random.randint(1, 10000000)
