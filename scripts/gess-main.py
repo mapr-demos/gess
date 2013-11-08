@@ -30,8 +30,8 @@ if DEBUG:
   FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
   logging.basicConfig(level=logging.DEBUG, format=FORMAT, datefmt='%Y-%m-%dT%I:%M:%S')
 else:
-  FORMAT = '%(asctime)-0s %(message)s'
-  logging.basicConfig(level=logging.INFO, format=FORMAT, datefmt='%Y-%m-%dT%I:%M:%S')
+  FORMAT = '%(message)s'
+  logging.basicConfig(level=logging.INFO, format=FORMAT)
 
 
 # creates a single financial transaction
@@ -55,28 +55,42 @@ def run_gess():
   out_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # use UDP
   start_time = datetime.datetime.now()
   num_fintrans = 0
-  overall_fintransize = 0
+  tp_fintrans = 0
+  num_bytes = 0
+  tp_bytes = 0
+  
+  # the header of the TSV formatted log statistics file
+  # (all values are relative to the sample interval)
+  #  sample_interval ... the sample interval (in seconds)
+  #  num_fintrans ... financial transactions emitted 
+  #  tp_fintrans ... throughput of financial transactions (in thousands/second)
+  #  num_bytes ... number of bytes emitted (in MB)
+  #  tp_bytes ... throughput of bytes (in kB/sec)
+  logging.info('sample_interval\tnum_fintrans\ttp_fintrans\tnum_bytes\ttp_bytes')
   while True:
     (fintran, fintransize) = create_fintran()
     send_fintran(out_socket, fintran)
     num_fintrans += 1
-    overall_fintransize += fintransize
+    num_bytes += fintransize
   
     end_time = datetime.datetime.now()
     diff_time = end_time - start_time
     
     if diff_time.seconds > (SAMPLE_INTERVAL - 1):
-      fintransps = (num_fintrans/1000) / diff_time.seconds
-      fintranssizeps = (overall_fintransize/1024) / diff_time.seconds
-      logging.info('Sample interval: %ssec' %diff_time.seconds)
-      logging.info('Transactions emitted in sample interval: %sk' %(num_fintrans/1000))
-      logging.info('Transaction-throughput in sample interval: %sk/sec' %fintransps)
-      logging.info('Bytes emitted in sample interval: %sMB' %(overall_fintransize/1024/1024))
-      logging.info('Bytes-throughput in sample interval: %skB/sec' %fintranssizeps)
-      
+      tp_fintrans = (num_fintrans/1000) / diff_time.seconds
+      tp_bytes = (num_bytes/1024) / diff_time.seconds
+      logging.info('%s\t%d\t%d\t%d\t%d'
+        %(
+          diff_time.seconds,
+          (num_fintrans/1000), 
+          tp_fintrans,
+          (num_bytes/1024/1024),
+          tp_bytes
+        )
+      )
       start_time = datetime.datetime.now()
       num_fintrans = 0
-      overall_fintransize = 0
+      num_bytes = 0
       
 
 
