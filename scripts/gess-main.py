@@ -62,7 +62,7 @@ def run_gess():
   # the header of the TSV formatted log statistics file
   # (all values are relative to the sample interval)
   #  sample_interval ... the sample interval (in seconds)
-  #  num_fintrans ... financial transactions emitted 
+  #  num_fintrans ... financial transactions emitted
   #  tp_fintrans ... throughput of financial transactions (in thousands/second)
   #  num_bytes ... number of bytes emitted (in MB)
   #  tp_bytes ... throughput of bytes (in kB/sec)
@@ -82,7 +82,7 @@ def run_gess():
       logging.info('%s\t%d\t%d\t%d\t%d'
         %(
           diff_time.seconds,
-          (num_fintrans/1000), 
+          num_fintrans, 
           tp_fintrans,
           (num_bytes/1024/1024),
           tp_bytes
