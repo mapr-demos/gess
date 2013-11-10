@@ -13,8 +13,6 @@ import logging
 from fintrans import FinTransSource
 
 DEBUG = False
-SAMPLE_INTERVAL = 5   # defines the sampling interval (in seconds) for 
-                      # reporting runtime statistics 
 
 
 if DEBUG:

@@ -1,6 +1,6 @@
 # gess
 
-A _ge_nerator for _s_ynthetic _s_treams of financial transactions.
+A _ge_nerator for _s_ynthetic _s_treams of financial transactions (ATM withdrawals).
 
 ## Usage
 
@@ -23,7 +23,34 @@ JSON-formatted fashion on default port `6900` via UDP
     {'timestamp': '2013-11-08T10:58:19.668733', 'amount': 3258696, 'account_from': 1, 'transaction_id': '82e130c0-57c9-44d4-8575-d7cc620ccd41', 'account_to': 280}
     {'timestamp': '2013-11-08T10:58:19.668900', 'amount': 5678310, 'account_from': 524, 'transaction_id': 'd3355a52-2c56-4855-9499-81ff4a67eb1e', 'account_to': 588}
     ...
-    
+
+## Data
+
+We aim for quality synthetic data. To this end, we have obtained the geolocation
+of ATMs in Europe, serving as the basis for the withdrawals, from the 
+[OpenStreetMap](http://openstreetmap.org) project. 
+
+To be more precise, we have extracted the 
+[geo-coordinates](data/osm-atm-garmin.csv) of 822 ATMs via
+[POI export](http://poi-osm.tucristal.es/) for the following countries:
+
+* Spain
+* France
+* Portugal
+* Belgium
+* Switzerland
+* Germany
+* Italy
+
+The withdrawal amounts are stacked (20, 50, 100, 200, 300, 400) and the rest
+of the data is random. 
+
+Note that the fraudulent transactions (consecutive withdrawals in different
+location in a short time frame) will be marked in that they have a 
+`transaction_id` that starts with `xxx`. This is for convinience reasons to
+enable a simpler CLI-level debugging but can otherwise be ignored.
+
+
 ## Understanding the runtime statistics
 
 In parallel to the data streaming, `gess` will output runtime statistics into
@@ -56,11 +83,8 @@ So, for example, the first non-header line states that:
 
 ## To Do
 
-* Implement multi-gess (launch X instances of gess-main in range of ports) 
-* Implement throttling
-
-## Architecture
-TBD.
+* Implement multi-gess through [threading](http://stackoverflow.com/questions/2846653/python-multithreading-for-dummies) over range of ports 
+* Implement throttling (2x, 5x, 10x)
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
