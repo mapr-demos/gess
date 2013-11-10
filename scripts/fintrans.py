@@ -44,7 +44,7 @@ class FinTransSource(object):
          self.send_port = send_port
          self.atm_loc = {}
          self._load_data()
-
+  
   # loads the ATM location data from the OSM dump
   def _load_data(self):
     osm_atm_file = open(OSM_ATM_DATA, 'rb')
@@ -59,12 +59,6 @@ class FinTransSource(object):
     finally:
       osm_atm_file.close()
       logging.debug('Loaded %d ATM locations in total.' %(atm_counter))
-  
-  # dumps the OSM ATM data
-  def dump_data(self):
-    for k, v in self.atm_loc.iteritems():
-      logging.info('ATM %s location: %s %s' %(k, v[0], v[1]))
-  
   
   # creates a single financial transaction (ATM withdrawal) using
   # the following format:
@@ -95,6 +89,15 @@ class FinTransSource(object):
     out_socket.sendto(str(fintran) + '\n', (GESS_IP, self.send_port))
     logging.debug('Sent financial transaction: %s' %fintran)
     
+  ############# API ############################################################
+
+  # dumps the OSM ATM data
+  def dump_data(self):
+    for k, v in self.atm_loc.iteritems():
+      logging.info('ATM %s location: %s %s' %(k, v[0], v[1])) 
+  
+  # generates financial transactions (ATM withdrawals) and sends them
+  # via UDP on port GESS_UDP_PORT as well as logs runtime statistics.
   def run(self):
     out_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # use UDP
     start_time = datetime.datetime.now()
@@ -103,7 +106,7 @@ class FinTransSource(object):
     num_bytes = 0
     tp_bytes = 0
   
-    # the header of the TSV formatted log statistics file
+    # the header of the TSV-formatted log statistics file
     # (all values are relative to the sample interval)
     #  sample_interval ... the sample interval (in seconds)
     #  num_fintrans ... financial transactions emitted
