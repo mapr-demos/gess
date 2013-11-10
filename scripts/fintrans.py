@@ -16,14 +16,18 @@ import string
 import datetime
 import random
 import uuid
+import csv
 
 DEBUG = False
 
 GESS_IP = "127.0.0.1"
 GESS_UDP_PORT = 6900  # defines default port for a single gess running
-SAMPLE_INTERVAL = 5   # defines the sampling interval (in seconds) for 
+SAMPLE_INTERVAL = 10  # defines the sampling interval (in seconds) for 
                       # reporting runtime statistics 
 
+# ATM withdrawal data config
+OSM_ATM_DATA = 'data/osm-atm-garmin.csv'
+AMOUNTS = [20, 50, 100, 200, 300, 400]
 
 if DEBUG:
   FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
@@ -38,15 +42,50 @@ class FinTransSource(object):
   def __init__(self, send_port=GESS_UDP_PORT):
          #threading.Thread.__init__(self)
          self.send_port = send_port
+         self.atm_loc = {}
+         self._load_data()
 
-  # creates a single financial transaction
+  # loads the ATM location data from the OSM dump
+  def _load_data(self):
+    osm_atm_file = open(OSM_ATM_DATA, 'rb')
+    atm_counter = 0
+    try:
+      reader = csv.reader(osm_atm_file, delimiter=',')
+      for row in reader:
+        lat, lon = row[1], row[0]
+        atm_counter += 1
+        self.atm_loc[str(atm_counter)] = lat, lon
+        logging.debug('Loaded ATM location %s, %s' %(lat, lon))
+    finally:
+      osm_atm_file.close()
+      logging.debug('Loaded %d ATM locations in total.' %(atm_counter))
+  
+  # dumps the OSM ATM data
+  def dump_data(self):
+    for k, v in self.atm_loc.iteritems():
+      logging.info('ATM %s location: %s %s' %(k, v[0], v[1]))
+  
+  
+  # creates a single financial transaction (ATM withdrawal) using
+  # the following format:
+  # {
+  #   'timestamp': '2013-11-08T10:58:19.668225', 
+  #   'lat': '37,3896661',
+  #   'lon': '-5.9742199',
+  #   'amount': 100, 
+  #   'account_id': 'a335', 
+  #   'transaction_id': '636adacc-49d2-11e3-a3d1-a820664821e3'
+  # }
   def _create_fintran(self):
+    rloc = random.choice(self.atm_loc.keys()) # obtain a random ATM location
+    lat, lon = self.atm_loc[rloc]
     fintran = {
       'timestamp' : str(datetime.datetime.now().isoformat()),
-      'transaction_id' : str(uuid.uuid4()),
-      'account_from' : random.randint(1, 1000),
-      'account_to' : random.randint(1, 1000),
-      'amount' : random.randint(1, 10000000)
+      'lat' : str(lat),
+      'lon' :  str(lon),
+      'amount' : random.choice(AMOUNTS),
+      'account_id' : 'a' + str(random.randint(1, 1000)),
+      'transaction_id' : str(uuid.uuid1())
     }    
     logging.debug('Created financial transaction: %s' %fintran)
     return (fintran, sys.getsizeof(str(fintran)))
@@ -97,3 +136,11 @@ class FinTransSource(object):
         num_fintrans = 0
         num_bytes = 0
 
+
+################################################################################
+## Main script
+
+if __name__ == '__main__':
+  fns = FinTransSource()
+  # fns.dump_data()
+  fns.run()

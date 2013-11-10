@@ -13,16 +13,25 @@ Then, check if `gess` is working fine:
     $ ./dummy_gess_sink.sh
 
 
-Once active, `gess` will stream financial transactions in a line-oriented,
-JSON-formatted fashion on default port `6900` via UDP 
+Once active, `gess` will stream synthetic data about ATM withdrawals, 
+in a line-oriented, JSON-formatted fashion on default port `6900` via UDP 
 (which you can observe as the output of `dummy_gess_sink.sh`):
 
-    {'timestamp': '2013-11-08T10:58:19.668225', 'amount': 1315372, 'account_from': 335, 'transaction_id': '0888199f-b65c-49b8-a816-719b90308c62', 'account_to': 979}
-    {'timestamp': '2013-11-08T10:58:19.668396', 'amount': 7141834, 'account_from': 84, 'transaction_id': '8102c772-48e9-4a2f-9b0a-7ab78d8875c0', 'account_to': 218}
-    {'timestamp': '2013-11-08T10:58:19.668565', 'amount': 7609895, 'account_from': 259, 'transaction_id': '5ca91f40-3714-41b3-bdc2-4bb528c196ec', 'account_to': 926}
-    {'timestamp': '2013-11-08T10:58:19.668733', 'amount': 3258696, 'account_from': 1, 'transaction_id': '82e130c0-57c9-44d4-8575-d7cc620ccd41', 'account_to': 280}
-    {'timestamp': '2013-11-08T10:58:19.668900', 'amount': 5678310, 'account_from': 524, 'transaction_id': 'd3355a52-2c56-4855-9499-81ff4a67eb1e', 'account_to': 588}
     ...
+    {
+      'timestamp': '2013-11-08T10:58:19.668225', 
+      'lat': '37,3896661',
+      'lon': '-5.9742199',
+      'amount': 100, 
+      'account_id': 'a335', 
+      'transaction_id': '636adacc-49d2-11e3-a3d1-a820664821e3'
+    }
+    ...
+
+Note that in the above example,
+showing a withdrawal in [Spain](https://www.google.com/maps/preview#!q=37%C2%B0+39.850'%2C+-5%C2%B0+58.477'),
+the data has been re-formatted for readability reasons. In fact, each 
+transaction spans a single line and is terminated by a `\n`.
 
 ## Data
 
@@ -54,14 +63,16 @@ enable a simpler CLI-level debugging but can otherwise be ignored.
 ## Understanding the runtime statistics
 
 In parallel to the data streaming, `gess` will output runtime statistics into
-the log file `gess.log`, using a TSV format that looks like following:
+the log file `gess.log`, using a TSV format that looks like following (slightly
+re-formatted for redability):
 
-    sample_interval	num_fintrans	tp_fintrans	num_bytes	tp_bytes
-    5	89835	17	14	2869
-    5	92572	18	14	2957
-    5	91259	18	14	2915
-    5	91980	18	14	2938
-    5	92069	18	14	2941
+    sample_interval num_fintrans  tp_fintrans num_bytes tp_bytes
+    10	            77828         7           16        1642
+    10	            78547         7           16        1657
+    10	            72895         7           15        1537
+    10	            69906         6           14        1474
+    10	            69748         6           14        1471
+    10	            70618         7           14        1489
     ...
 
 With the following semantics for the columns:
@@ -74,11 +85,11 @@ With the following semantics for the columns:
 
 So, for example, the first non-header line states that:
 
-* in the sample interval of 5 sec
-* 89,835 financial transactions were emitted
-* with a throughput of  17 thousand transactions per sec
-* and further 14MB have been emitted 
-* with a throughput of 2869kB per second.
+* in the sample interval of 10 sec, 
+* 77,828 financial transactions were emitted,
+* with a throughput of  7000 transactions per sec,
+* and further, that 16MB have been emitted, 
+* with a throughput of 1642kB per second.
 
 
 ## To Do
