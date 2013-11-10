@@ -64,7 +64,7 @@ enable a simpler CLI-level debugging but can otherwise be ignored.
 
 In parallel to the data streaming, `gess` will output runtime statistics into
 the log file `gess.log`, using a TSV format that looks like following (slightly
-re-formatted for redability):
+re-formatted for readability):
 
     sample_interval num_fintrans  tp_fintrans num_bytes tp_bytes
     10	            77828         7           16        1642
@@ -91,6 +91,8 @@ So, for example, the first non-header line states that:
 * and further, that 16MB have been emitted, 
 * with a throughput of 1642kB per second.
 
+Note: in terms of throughput, a single `gess` instance should be able to produce
+some 5GB of transaction data, per hour.
 
 ## To Do
 
