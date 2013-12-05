@@ -8,7 +8,7 @@
 #
 #
 
-GESS_LOG=gess.log
+GESS_LOG=gess.tsv
 GESS_PID=gess.pid
 
 function usage() {

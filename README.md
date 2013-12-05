@@ -12,7 +12,6 @@ Then, check if `gess` is working fine:
 
     $ ./dummy_gess_sink.sh
 
-
 Once active, `gess` will stream synthetic data about ATM withdrawals, 
 in a line-oriented, JSON-formatted fashion on default port `6900` via UDP 
 (which you can observe as the output of `dummy_gess_sink.sh`):
@@ -32,6 +31,9 @@ Note that in the above example,
 showing a withdrawal in [Spain](https://www.google.com/maps/preview#!q=37%C2%B0+39.850'%2C+-5%C2%B0+58.477'),
 the data has been re-formatted for readability reasons. In fact, each 
 transaction spans a single line and is terminated by a `\n`.
+
+Further note that `dummy_gess_sink.sh` both echoes the received values on screen
+and logs them in a file with the name  `dummy_gess_sink.log`.
 
 ## Data
 
@@ -56,43 +58,39 @@ of the data is random.
 
 Note that the fraudulent transactions (consecutive withdrawals in different
 location in a short time frame) will be marked in that they have a 
-`transaction_id` that starts with `xxx`. This is for convinience reasons to
-enable a simpler CLI-level debugging but can otherwise be ignored.
+`transaction_id` that reads `xxx` and then the `transaction_id` of the original
+transaction. This is for convenience reasons to enable a simpler 
+CLI-level debugging but can otherwise be ignored.
 
 
 ## Understanding the runtime statistics
 
 In parallel to the data streaming, `gess` will output runtime statistics into
-the log file `gess.log`, using a TSV format that looks like following (slightly
+the log file `gess.tsv`, using a TSV format that looks like following (slightly
 re-formatted for readability):
 
-    sample_interval num_fintrans  tp_fintrans num_bytes tp_bytes
-    10	            77828         7           16        1642
-    10	            78547         7           16        1657
-    10	            72895         7           15        1537
-    10	            69906         6           14        1474
-    10	            69748         6           14        1471
-    10	            70618         7           14        1489
+    num_fintrans tp_fintrans num_bytes tp_bytes
+    57           11          11        2
+    58           11          12        2
+    57           11          11        2
     ...
 
 With the following semantics for the columns:
 
-* `sample_interval` … the sample interval (in seconds)
-*  `num_fintrans` … financial transactions emitted in sample interval 
+*  `num_fintrans` … financial transactions emitted in sample interval (in thousands)
 *  `tp_fintrans` … throughput of financial transactions (in thousands/second) in sample interval
 *  `num_bytes` … number of bytes emitted (in MB) in sample interval
-*  `tp_bytes` … throughput of bytes (in kB/sec) in sample interval
+*  `tp_bytes` … throughput of bytes (in MB/sec) in sample interval
 
 So, for example, the first non-header line states that:
 
-* in the sample interval of 10 sec, 
-* 77,828 financial transactions were emitted,
-* with a throughput of  7000 transactions per sec,
-* and further, that 16MB have been emitted, 
-* with a throughput of 1642kB per second.
+* Some 57,000 financial transactions were emitted, in the sample interval ...
+* ... with a throughput of 11,000 transactions per sec.
+* And further, that 11MB have been emitted ... 
+* ... with a throughput of 2MB/sec in the sample interval.
 
 Note: in terms of throughput, a single `gess` instance should be able to produce
-some 5GB of transaction data, per hour.
+some 4-5GB of transaction data, per hour.
 
 ## To Do
 

@@ -17,17 +17,29 @@ import datetime
 import random
 import uuid
 import csv
+from time import sleep
 
 DEBUG = False
 
+# defines the host for a single gess running
 GESS_IP = "127.0.0.1"
-GESS_UDP_PORT = 6900  # defines default port for a single gess running
-SAMPLE_INTERVAL = 10  # defines the sampling interval (in seconds) for 
-                      # reporting runtime statistics 
+
+# defines default port for a single gess running
+GESS_UDP_PORT = 6900
+
+# defines the sampling interval (in seconds) for reporting runtime statistics
+SAMPLE_INTERVAL = 5
+
+# lower range for the randomly assigned fraud tick span
+FRAUD_TICK_MIN = 1
+
+# upper range for the randomly assigned fraud tick span
+FRAUD_TICK_MAX = 10
 
 # ATM withdrawal data config
 OSM_ATM_DATA = 'data/osm-atm-garmin.csv'
 AMOUNTS = [20, 50, 100, 200, 300, 400]
+
 
 if DEBUG:
   FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
@@ -64,8 +76,8 @@ class FinTransSource(object):
   # the following format:
   # {
   #   'timestamp': '2013-11-08T10:58:19.668225', 
-  #   'lat': '37,3896661',
-  #   'lon': '-5.9742199',
+  #   'lat': '37.3',
+  #   'lon': '-5.9',
   #   'amount': 100, 
   #   'account_id': 'a335', 
   #   'transaction_id': '636adacc-49d2-11e3-a3d1-a820664821e3'
@@ -83,6 +95,32 @@ class FinTransSource(object):
     }    
     logging.debug('Created financial transaction: %s' %fintran)
     return (fintran, sys.getsizeof(str(fintran)))
+
+  # creates a single fraudulent financial transaction (ATM withdrawal)
+  # based on an existing transaction, using the following format:
+  # {
+  #   'timestamp': '2013-11-08T12:28:39.466325', 
+  #   'lat': '42.3',
+  #   'lon': '4.9',
+  #   'amount': 200, 
+  #   'account_id': 'a335', 
+  #   'transaction_id': 'xxx'
+  # }
+  # Note: the fraudulent transaction will have the same account ID as
+  #       the original transaction but different location and ammount.
+  def _create_fraudtran(self, fintran):
+    rloc = random.choice(self.atm_loc.keys()) # obtain a random ATM location
+    lat, lon = self.atm_loc[rloc]
+    fraudtran = {
+      'timestamp' : str(datetime.datetime.now().isoformat()),
+      'lat' : str(lat),
+      'lon' :  str(lon),
+      'amount' : random.choice(AMOUNTS),
+      'account_id' : fintran['account_id'],
+      'transaction_id' : 'xxx' + str(fintran['transaction_id'])
+    }    
+    logging.debug('Created fraudulent financial transaction: %s' %fraudtran)
+    return (fraudtran, sys.getsizeof(str(fraudtran)))
 
   # sends a single financial transaction via UDP
   def _send_fintran(self, out_socket, fintran):
@@ -105,31 +143,46 @@ class FinTransSource(object):
     tp_fintrans = 0
     num_bytes = 0
     tp_bytes = 0
+    ticks = 0 # ticks (virtual time basis for emits)
+    fraud_tick = random.randint(FRAUD_TICK_MIN, FRAUD_TICK_MAX) 
   
     # the header of the TSV-formatted log statistics file
     # (all values are relative to the sample interval)
-    #  sample_interval ... the sample interval (in seconds)
-    #  num_fintrans ... financial transactions emitted
-    #  tp_fintrans ... throughput of financial transactions (in thousands/second)
+    #  num_fintrans ... financial transactions emitted (in thousands)
+    #  tp_fintrans ... throughput of financial transactions (in thousands/sec)
     #  num_bytes ... number of bytes emitted (in MB)
-    #  tp_bytes ... throughput of bytes (in kB/sec)
-    logging.info('sample_interval\tnum_fintrans\ttp_fintrans\tnum_bytes\ttp_bytes')
+    #  tp_bytes ... throughput of bytes (in MB/sec)
+    logging.info('num_fintrans\ttp_fintrans\tnum_bytes\ttp_bytes')
+    
     while True:
+      
+      ticks += 1      
+      logging.debug('TICKS: %d' %ticks)
+
       (fintran, fintransize) = self._create_fintran()
       self._send_fintran(out_socket, fintran)
-      num_fintrans += 1
-      num_bytes += fintransize
+
+      # here a fraudulent transaction will be ingested, randomly every 10-100sec
+      if ticks > fraud_tick:
+        (fraudtran, fraudtransize) = self._create_fraudtran(fintran)
+        self._send_fintran(out_socket, fraudtran)
+        num_fintrans += 2
+        num_bytes += fintransize + fraudtransize
+        ticks = 0
+        fraud_tick = random.randint(FRAUD_TICK_MIN, FRAUD_TICK_MAX)
+      else:  
+        num_fintrans += 1
+        num_bytes += fintransize
   
       end_time = datetime.datetime.now()
       diff_time = end_time - start_time
     
       if diff_time.seconds > (SAMPLE_INTERVAL - 1):
         tp_fintrans = (num_fintrans/1000) / diff_time.seconds
-        tp_bytes = (num_bytes/1024) / diff_time.seconds
-        logging.info('%s\t%d\t%d\t%d\t%d'
+        tp_bytes = (num_bytes/1024/1024) / diff_time.seconds
+        logging.info('%d\t%d\t%d\t%d'
           %(
-            diff_time.seconds,
-            num_fintrans, 
+            (num_fintrans/1000), 
             tp_fintrans,
             (num_bytes/1024/1024),
             tp_bytes

@@ -11,4 +11,4 @@
 # Usage: ./dummy_gess_sink.sh
 #
 #
-nc -v -u -l 6900
+nc -v -u -l 6900 | tee dummy_gess_sink.log
