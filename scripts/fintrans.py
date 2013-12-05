@@ -28,13 +28,13 @@ GESS_IP = "127.0.0.1"
 GESS_UDP_PORT = 6900
 
 # defines the sampling interval (in seconds) for reporting runtime statistics
-SAMPLE_INTERVAL = 5
+SAMPLE_INTERVAL = 10
 
-# lower range for the randomly assigned fraud tick span
-FRAUD_TICK_MIN = 1
+# lower range for randomly emitted frauds (min. tick between trans)
+FRAUD_TICK_MIN = 2000
 
-# upper range for the randomly assigned fraud tick span
-FRAUD_TICK_MAX = 10
+# upper range for randomly emitted frauds (max. tick between trans)
+FRAUD_TICK_MAX = 20000
 
 # ATM withdrawal data config
 OSM_ATM_DATA = 'data/osm-atm-garmin.csv'
