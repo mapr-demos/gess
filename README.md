@@ -92,10 +92,5 @@ So, for example, the first non-header line states that:
 Note: in terms of throughput, a single `gess` instance should be able to produce
 some 4-5GB of transaction data, per hour.
 
-## To Do
-
-* Implement multi-gess through [threading](http://stackoverflow.com/questions/2846653/python-multithreading-for-dummies) over range of ports 
-* Implement throttling (2x, 5x, 10x)
-
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
