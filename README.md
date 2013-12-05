@@ -19,7 +19,7 @@ in a line-oriented, JSON-formatted fashion on default port `6900` via UDP
     ...
     {
       'timestamp': '2013-11-08T10:58:19.668225', 
-      'lat': '37,3896661',
+      'lat': '37.3896661',
       'lon': '-5.9742199',
       'amount': 100, 
       'account_id': 'a335', 
