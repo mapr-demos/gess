@@ -17,6 +17,7 @@ import datetime
 import random
 import uuid
 import csv
+import json
 from time import sleep
 
 DEBUG = False
@@ -161,12 +162,12 @@ class FinTransSource(object):
       logging.debug('TICKS: %d' %ticks)
 
       (fintran, fintransize) = self._create_fintran()
-      self._send_fintran(out_socket, fintran)
+      self._send_fintran(out_socket, json.dumps(fintran))
 
       # here a fraudulent transaction will be ingested, randomly every 10-100sec
       if ticks > fraud_tick:
         (fraudtran, fraudtransize) = self._create_fraudtran(fintran)
-        self._send_fintran(out_socket, fraudtran)
+        self._send_fintran(out_socket, json.dumps(fraudtran))
         num_fintrans += 2
         num_bytes += fintransize + fraudtransize
         ticks = 0
