@@ -148,11 +148,12 @@ class FinTransSource(object):
   
     # the header of the TSV-formatted log statistics file
     # (all values are relative to the sample interval)
+    #  timestamp
     #  num_fintrans ... financial transactions emitted (in thousands)
     #  tp_fintrans ... throughput of financial transactions (in thousands/sec)
     #  num_bytes ... number of bytes emitted (in MB)
     #  tp_bytes ... throughput of bytes (in MB/sec)
-    logging.info('num_fintrans\ttp_fintrans\tnum_bytes\ttp_bytes')
+    logging.info('timestamp\tnum_fintrans\ttp_fintrans\tnum_bytes\ttp_bytes')
     
     while True:
       
@@ -180,8 +181,9 @@ class FinTransSource(object):
       if diff_time.seconds > (SAMPLE_INTERVAL - 1):
         tp_fintrans = (num_fintrans/1000) / diff_time.seconds
         tp_bytes = (num_bytes/1024/1024) / diff_time.seconds
-        logging.info('%d\t%d\t%d\t%d'
+        logging.info('%s\t%d\t%d\t%d\t%d'
           %(
+            str(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')),
             (num_fintrans/1000), 
             tp_fintrans,
             (num_bytes/1024/1024),

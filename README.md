@@ -65,14 +65,14 @@ CLI-level debugging but can otherwise be ignored.
 
 ## Understanding the runtime statistics
 
-In parallel to the data streaming, `gess` will output runtime statistics into
-the log file `gess.tsv`, using a TSV format that looks like following (slightly
-re-formatted for readability):
+In parallel to the data streaming, `gess` will output runtime statistics every
+5sec into the log file `gess.tsv`. I'm using a TSV format that looks like 
+following (slightly re-formatted for readability):
 
-    num_fintrans tp_fintrans num_bytes tp_bytes
-    57           11          11        2
-    58           11          12        2
-    57           11          11        2
+    timestamp            num_fintrans tp_fintrans num_bytes tp_bytes
+    2013-12-05T16:03:17  57           11          11        2
+    2013-12-05T16:03:22  58           11          12        2
+    2013-12-05T16:03:27  57           11          11        2
     ...
 
 With the following semantics for the columns:
