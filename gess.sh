@@ -38,18 +38,18 @@ function stop_gess() {
 }
 
 function is_gess_running() {
-	case `uname` in
-		Linux|AIX) PS_ARGS='-ewwo pid,args'   ;;
-		SunOS)     PS_ARGS='-eo pid,args'     ;;
-		*BSD)      PS_ARGS='axwwo pid,args'   ;;
-		Darwin)    PS_ARGS='Awwo pid,command' ;;
-	esac
+  case `uname` in
+          Linux|AIX) PS_ARGS='-ewwo pid,args'   ;;
+          SunOS)     PS_ARGS='-eo pid,args'     ;;
+          *BSD)      PS_ARGS='axwwo pid,args'   ;;
+          Darwin)    PS_ARGS='Awwo pid,command' ;;
+  esac
 
-	if ps $PS_ARGS | grep -q '[p]ython gess' ; then
-		echo 'gess is running, see also log file:' $GESS_LOG
-	else
-		echo 'gess is currently not running.'
-	fi
+  if ps $PS_ARGS | grep -q '[p]ython scripts/gess-main.py' ; then
+          echo 'gess is running, see also log file:' $GESS_LOG
+  else
+          echo 'gess is currently not running.'
+  fi
 }
 
 # main script
