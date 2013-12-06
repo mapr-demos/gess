@@ -27,12 +27,16 @@ in a line-oriented, JSON-formatted fashion on default port `6900` via UDP
     }
     ...
 
-Note that in the above example,
+Note 1: The average size of one transaction (interpreted as a string) 
+is around 200 Bytes. This means `gess` is typically able to emit some 2MB/sec 
+resulting in some 7GB/h of transaction data. 
+
+Note 2: that in the above example,
 showing a withdrawal in [Spain](https://www.google.com/maps/preview#!q=37%C2%B0+39.850'%2C+-5%C2%B0+58.477'),
 the data has been re-formatted for readability reasons. In fact, each 
 transaction spans a single line and is terminated by a `\n`.
 
-Further note that `dummy_gess_sink.sh` both echoes the received values on screen
+Note 3: that `dummy_gess_sink.sh` both echoes the received values on screen
 and logs them in a file with the name  `dummy_gess_sink.log`.
 
 ## Data
