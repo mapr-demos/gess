@@ -93,8 +93,5 @@ So, for example, the first non-header line states that:
 * And further, that 11MB have been emitted ... 
 * ... with a throughput of 2MB/sec in the sample interval.
 
-Note: in terms of throughput, a single `gess` instance should be able to produce
-some 4-5GB of transaction data, per hour.
-
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
