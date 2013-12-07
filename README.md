@@ -41,21 +41,11 @@ and logs them in a file with the name  `dummy_gess_sink.log`.
 
 ## Data
 
-We aim for quality synthetic data. To this end, we have obtained the geolocation
-of ATMs in Europe, serving as the basis for the withdrawals, from the 
-[OpenStreetMap](http://openstreetmap.org) project. 
-
-To be more precise, we have extracted the 
-[geo-coordinates](data/osm-atm-garmin.csv) of 822 ATMs via
-[POI export](http://poi-osm.tucristal.es/) for the following countries:
-
-* Spain
-* France
-* Portugal
-* Belgium
-* Switzerland
-* Germany
-* Italy
+We aim for quality synthetic data. To this end, I obtained the geolocation
+of ATMs in Spain, serving as the basis for the withdrawals, from the 
+[OpenStreetMap](http://openstreetmap.org) project. To be more precise, I've
+extracted the [geo-coordinates](data/osm-atm-garmin.csv) of 822 ATMs in Spain via
+a [POI export](http://poi-osm.tucristal.es/) service.
 
 The withdrawal amounts are stacked (20, 50, 100, 200, 300, 400) and the rest
 of the data is random. 
