@@ -32,7 +32,7 @@ is around 200 Bytes. This means `gess` is typically able to emit some 2MB/sec
 resulting in some 7GB/h of transaction data. 
 
 Note 2: that in the above example,
-showing a withdrawal in [Spain](https://www.google.com/maps/preview#!q=37%C2%B0+39.850'%2C+-5%C2%B0+58.477'),
+showing a withdrawal in [Spain](https://maps.google.com/maps?q=36.7220096+-4.4186772&hl=en&sll=37.0625,-95.677068&sspn=43.037246,79.013672&t=m&z=16&iwloc=A),
 the data has been re-formatted for readability reasons. In fact, each 
 transaction spans a single line and is terminated by a `\n`.
 
