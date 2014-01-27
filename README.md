@@ -71,9 +71,9 @@ If you want to add new ATM locations download `.osm` dumps from sites such as
 [OSM/XML](http://wiki.openstreetmap.org/wiki/OSM_XML) format and extracts and 
 converts it into the [CSV format used](data/osm-atm-garmin.csv) internally.
 
-As a hint and data point it takes approximately 3min on my laptop to extract 
-the 55 ATM locations from the [San Francisco Bay Area](http://osm-extracted-metros.s3.amazonaws.com/sf-bay-area.osm.bz2)
-OSM file with a raw, total size of 1.45 GB unzipped.
+To give you an idea in terms of performance: on my laptop (MBP with 16GB)
+it takes approximately 3 min to extract the 416 ATM locations from the [San Francisco Bay Area](http://osm-extracted-metros.s3.amazonaws.com/sf-bay-area.osm.bz2)
+OSM file. This OSM file contains some 198,000 nodes with a raw, unzipped file size of 1.45 GB.
 
 ## Understanding the runtime statistics
 
