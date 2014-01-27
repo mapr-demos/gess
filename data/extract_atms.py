@@ -8,11 +8,12 @@ class ATMCounter(object):
         # callback method for ways
         for osmid, tags, refs in ways:
             if 'atm' in tags:
+              print osmid
               self.atms += 1
 
 # instantiate counter and parser and start parsing
 counter = ATMCounter()
-p = OSMParser(concurrency=1, ways_callback=counter.ways)
+p = OSMParser(concurrency=1, ways_callback=counter.atm_loc)
 p.parse('sf-bay-area.osm')
 
 # done
