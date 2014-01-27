@@ -39,7 +39,14 @@ transaction spans a single line and is terminated by a `\n`.
 Note 3: that `dummy_gess_sink.sh` both echoes the received values on screen
 and logs them in a file with the name  `dummy_gess_sink.log`.
 
+## Dependencies
+
+* Python 2.7+
+* For the data extraction part only (adding own ATM locations via OSM dumps): [imposm.parser](https://pypi.python.org/pypi/imposm.parser) which in turn depends on [ProtoBuf](https://code.google.com/p/protobuf/) installed.
+
 ## Data
+
+### Default setting (Spanish ATM locations  )
 
 We aim for quality synthetic data. To this end, I obtained the geolocation
 of ATMs in Spain, serving as the basis for the withdrawals, from the 
@@ -55,6 +62,15 @@ location in a short time frame) will be marked in that they have a
 `transaction_id` that reads `xxx` and then the `transaction_id` of the original
 transaction. This is for convenience reasons to enable a simpler 
 CLI-level debugging but can otherwise be ignored.
+
+### Extending ATM locations
+
+If you want to add new ATM locations download `.osm` dumps from sites such as 
+[Metro Extracts](http://metro.teczno.com/) and run 
+`data/extract_atms.py` which uses the ATM-tagged nodes in 
+[OSM/XML](http://wiki.openstreetmap.org/wiki/OSM_XML) format and extracts and 
+converts it into the [CSV format used](data/osm-atm-garmin.csv) internally.
+
 
 
 ## Understanding the runtime statistics
