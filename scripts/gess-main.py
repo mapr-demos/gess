@@ -13,8 +13,8 @@ import os
 
 from fintrans import FinTransSource
 
-DEBUG = True
-CONFIG_FILE = '../gess.conf'
+DEBUG = False
+CONFIG_FILE = 'gess.conf'
 
 if DEBUG:
   FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
@@ -28,8 +28,9 @@ else:
 # returns a list of absolute pathes to the CSV files specified.
 def read_config():
   atm_loc_sources = []
-  if os.path.exists(CONFIG_FILE):	
-    logging.info('Found gess config file, parsing ATM location sources to be used')
+  cf = os.path.abspath(CONFIG_FILE)
+  if os.path.exists(cf):	
+    logging.info('Using config file %s, parsing ATM location sources to be used' %cf)
     lines = tuple(open(CONFIG_FILE, 'r'))
     for line in lines:
       l = str(line).strip()

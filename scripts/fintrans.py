@@ -51,9 +51,9 @@ else:
 
 class FinTransSource(object):
 
-  def __init__(self, send_port=GESS_UDP_PORT, atm_loc_sources):
+  def __init__(self, atm_loc_sources):
          #threading.Thread.__init__(self)
-         self.send_port = send_port
+         self.send_port = GESS_UDP_PORT
          self.atm_loc = {}
          for atm_loc in atm_loc_sources:
            self._load_data(atm_loc)

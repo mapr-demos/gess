@@ -48,14 +48,13 @@ and logs them in a file with the name  `dummy_gess_sink.log`.
 
 ### Default setting (Spanish ATM locations  )
 
-We aim for quality synthetic data. To this end, I obtained the geolocation
-of ATMs in Spain, serving as the basis for the withdrawals, from the 
-[OpenStreetMap](http://openstreetmap.org) project. To be more precise, I've
-extracted the [geo-coordinates](data/osm-atm-garmin.csv) of 822 ATMs in Spain via
-a [POI export](http://poi-osm.tucristal.es/) service.
+We aim for quality synthetic data. To this end, the default data used for the
+ATM locations is that of Spain obtained from the [OpenStreetMap](http://openstreetmap.org) project.
+To be more precise, the default data are the [geo-coordinates](data/osm-atm-garmin.csv) 
+of 822 ATMs in Spain which have been downloaded via the [POI export](http://poi-osm.tucristal.es/) service.
 
 The withdrawal amounts are stacked (20, 50, 100, 200, 300, 400) and the rest
-of the data is random. 
+of the data (transaction ID/timestamp) is arbitrary. 
 
 Note that the fraudulent transactions (consecutive withdrawals in different
 location in a short time frame) will be marked in that they have a 
@@ -65,14 +64,16 @@ CLI-level debugging but can otherwise be ignored.
 
 ### Extending ATM locations
 
-If you want to add new ATM locations download `.osm` dumps from sites such as 
-[Metro Extracts](http://metro.teczno.com/) and run 
-`data/extract_atms.py` which uses the ATM-tagged nodes in 
-[OSM/XML](http://wiki.openstreetmap.org/wiki/OSM_XML) format and extracts and 
-converts it into the [CSV format used](data/osm-atm-garmin.csv) internally.
+If you want to add new ATM locations, then you need to do the following:
 
-To give you an idea in terms of performance: on my laptop (MBP with 16GB)
-it takes approximately 3 min to extract the 416 ATM locations from the [San Francisco Bay Area](http://osm-extracted-metros.s3.amazonaws.com/sf-bay-area.osm.bz2)
+1. Choose a geographic area and download the respective `.osm` dump from sites such as [Metro Extracts](http://metro.teczno.com/).
+1. Then, run `data/extract_atms.py`, which uses the ATM-tagged nodes in [OSM/XML](http://wiki.openstreetmap.org/wiki/OSM_XML) format and extracts/converts it into the [CSV format](data/osm-atm-garmin.csv) used internally, by gess.
+1. Add the so generated ATM location data file in CSV format to `gess.conf` so that gess picks it up on startup time.
+
+
+To give you an idea in terms of performance: on my laptop (MBP with 16 GB RAM)
+it takes approximately 3 min to extract the 416 ATM locations from the 
+[San Francisco Bay Area](http://osm-extracted-metros.s3.amazonaws.com/sf-bay-area.osm.bz2)
 OSM file. This OSM file contains some 198,000 nodes with a raw, unzipped file size of 1.45 GB.
 
 ## Understanding the runtime statistics
