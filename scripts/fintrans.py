@@ -38,7 +38,6 @@ FRAUD_TICK_MIN = 2000
 FRAUD_TICK_MAX = 20000
 
 # ATM withdrawal data config
-OSM_ATM_DATA = 'data/osm-atm-garmin.csv'
 AMOUNTS = [20, 50, 100, 200, 300, 400]
 
 
@@ -52,15 +51,17 @@ else:
 
 class FinTransSource(object):
 
-  def __init__(self, send_port=GESS_UDP_PORT):
+  def __init__(self, send_port=GESS_UDP_PORT, atm_loc_sources):
          #threading.Thread.__init__(self)
          self.send_port = send_port
          self.atm_loc = {}
-         self._load_data()
+         for atm_loc in atm_loc_sources:
+           self._load_data(atm_loc)
   
-  # loads the ATM location data from the OSM dump
-  def _load_data(self):
-    osm_atm_file = open(OSM_ATM_DATA, 'rb')
+  # loads the ATM location data from the specified CSV data file
+  def _load_data(self, atm_loc_data_file):
+    logging.debug('Trying to parse ATM location data file %s' %(atm_loc_data_file))
+    osm_atm_file = open(atm_loc_data_file, 'rb')
     atm_counter = 0
     try:
       reader = csv.reader(osm_atm_file, delimiter=',')
@@ -68,10 +69,10 @@ class FinTransSource(object):
         lat, lon = row[1], row[0]
         atm_counter += 1
         self.atm_loc[str(atm_counter)] = lat, lon
-        logging.debug('Loaded ATM location %s, %s' %(lat, lon))
+        logging.debug(' -> loaded ATM location %s, %s' %(lat, lon))
     finally:
       osm_atm_file.close()
-      logging.debug('Loaded %d ATM locations in total.' %(atm_counter))
+      logging.debug(' -> loaded %d ATM locations in total.' %(atm_counter))
   
   # creates a single financial transaction (ATM withdrawal) using
   # the following format:
@@ -194,12 +195,3 @@ class FinTransSource(object):
         start_time = datetime.datetime.now()
         num_fintrans = 0
         num_bytes = 0
-
-
-################################################################################
-## Main script
-
-if __name__ == '__main__':
-  fns = FinTransSource()
-  # fns.dump_data()
-  fns.run()
