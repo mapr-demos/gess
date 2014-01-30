@@ -10,8 +10,9 @@
   
   Example usage: python extract_atms.py sf-bay-area.osm
   
-  Note: the output file will have the same name as the input file but with a .csv
-        file extension, so in above usage example that would be sf-bay-area.csv
+  Note: the output file will have the same name as the input file but with a 
+        .csv file extension. In the above usage example this would mean the 
+        resulting output file is: sf-bay-area.csv
 
 @author: Michael Hausenblas, http://mhausenblas.info/#i
 @since: 2014-01-27
@@ -22,7 +23,7 @@ import logging
 import csv
 from imposm.parser import OSMParser
 
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
   FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
@@ -44,7 +45,7 @@ class ATMLocExtractor(object):
     result_file_writer = csv.writer(
         result_file,
         quoting=csv.QUOTE_NONNUMERIC,
-        delimiter='|'
+        delimiter=','
     )
     for atm in self.atm_list:
       logging.debug('%s' %(atm))
