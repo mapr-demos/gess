@@ -66,29 +66,31 @@ class FinTransSource(object):
     try:
       reader = csv.reader(osm_atm_file, delimiter=',')
       for row in reader:
-        lat, lon = row[1], row[0]
+        lat, lon, atm_label = row[1], row[0], row[2] 
         atm_counter += 1
-        self.atm_loc[str(atm_counter)] = lat, lon
+        self.atm_loc[str(atm_counter)] = lat, lon, atm_label
         logging.debug(' -> loaded ATM location %s, %s' %(lat, lon))
     finally:
       osm_atm_file.close()
       logging.debug(' -> loaded %d ATM locations in total.' %(atm_counter))
   
-  # creates a single financial transaction (ATM withdrawal) using
-  # the following format:
+  # creates a single financial transaction (ATM withdrawal) using the following
+  # format:
   # {
-  #   'timestamp': '2013-11-08T10:58:19.668225', 
-  #   'lat': '37.3',
-  #   'lon': '-5.9',
+  #   'timestamp': '2013-11-08T10:58:19.668225',
+  #   'atm' : 'Santander', 
+  #   'lat': '39.5655472',
+  #   'lon': '-0.530058',
   #   'amount': 100, 
   #   'account_id': 'a335', 
   #   'transaction_id': '636adacc-49d2-11e3-a3d1-a820664821e3'
   # }
   def _create_fintran(self):
     rloc = random.choice(self.atm_loc.keys()) # obtain a random ATM location
-    lat, lon = self.atm_loc[rloc]
+    lat, lon, atm_label = self.atm_loc[rloc]
     fintran = {
       'timestamp' : str(datetime.datetime.now().isoformat()),
+      'atm' : str(atm_label),
       'lat' : str(lat),
       'lon' :  str(lon),
       'amount' : random.choice(AMOUNTS),
@@ -102,19 +104,21 @@ class FinTransSource(object):
   # based on an existing transaction, using the following format:
   # {
   #   'timestamp': '2013-11-08T12:28:39.466325', 
-  #   'lat': '42.3',
-  #   'lon': '4.9',
+  #   'atm' : 'Santander', 
+  #   'lat': '39.5655472',
+  #   'lon': '-0.530058',
   #   'amount': 200, 
   #   'account_id': 'a335', 
-  #   'transaction_id': 'xxx'
+  #   'transaction_id': 'xxx636adacc-49d2-11e3-a3d1-a820664821e3'
   # }
   # Note: the fraudulent transaction will have the same account ID as
   #       the original transaction but different location and ammount.
   def _create_fraudtran(self, fintran):
     rloc = random.choice(self.atm_loc.keys()) # obtain a random ATM location
-    lat, lon = self.atm_loc[rloc]
+    lat, lon, atm_label = self.atm_loc[rloc]
     fraudtran = {
       'timestamp' : str(datetime.datetime.now().isoformat()),
+      'atm' : str(atm_label),
       'lat' : str(lat),
       'lon' :  str(lon),
       'amount' : random.choice(AMOUNTS),
