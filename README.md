@@ -18,17 +18,18 @@ in a line-oriented, JSON-formatted fashion on default port `6900` via UDP
 
     ...
     {
-      'timestamp': '2013-11-08T10:58:19.668225', 
+      'timestamp': '2013-11-08T10:58:19.668225',
+      'atm' : 'Santander',
       'lat': '36.7220096',
       'lon': '-4.4186772',
-      'amount': 100, 
-      'account_id': 'a335', 
+      'amount': 100,
+      'account_id': 'a335',
       'transaction_id': '636adacc-49d2-11e3-a3d1-a820664821e3'
     }
     ...
 
-Note 1: The average size of one transaction (interpreted as a string) 
-is around 200 Bytes. This means `gess` is typically able to emit some 2MB/sec 
+Note 1: The average size of one transaction (interpreted as a string) is ca. 
+200-250 Bytes. This means `gess` is typically able to emit some 2MB/sec 
 resulting in some 7GB/h of transaction data. 
 
 Note 2: that in the above example,
@@ -37,7 +38,7 @@ the data has been re-formatted for readability reasons. In fact, each
 transaction spans a single line and is terminated by a `\n`.
 
 Note 3: that `dummy_gess_sink.sh` both echoes the received values on screen
-and logs them in a file with the name  `dummy_gess_sink.log`.
+and logs them in a file with the name `dummy_gess_sink.log`.
 
 ## Dependencies
 
@@ -71,10 +72,10 @@ If you want to add new ATM locations, then you need to do the following:
 1. Add the so generated ATM location data file in CSV format to `gess.conf` so that gess picks it up on startup time.
 
 
-To give you an idea in terms of performance: on my laptop (MBP with 16 GB RAM)
-it takes approximately 3 min to extract the 416 ATM locations from the 
+To give you an idea in terms of performance: on my laptop (a MBP with 16 GB RAM)
+it takes approximately 3 min to extract 416 ATM locations from the 
 [San Francisco Bay Area](http://osm-extracted-metros.s3.amazonaws.com/sf-bay-area.osm.bz2)
-OSM file. This OSM file contains some 198,000 nodes with a raw, unzipped file size of 1.45 GB.
+OSM file. This OSM file contains some 198,000 nodes with a raw, unzipped file size of 1.45 GB.  
 
 ## Understanding the runtime statistics
 
@@ -83,9 +84,12 @@ In parallel to the data streaming, `gess` will output runtime statistics every
 following (slightly re-formatted for readability):
 
     timestamp            num_fintrans tp_fintrans num_bytes tp_bytes
-    2013-12-05T16:03:17  112          11          23        2
-    2013-12-05T16:03:37  110          11          22        2
-    2013-12-05T16:03:47  112          11          23        2
+    2014-02-03T05:56:59  101          10          23        2
+    2014-02-03T05:57:09  102          10          23        2
+    2014-02-03T05:57:19  99           9           22        2
+    2014-02-03T05:57:29  97           9           22        2
+    2014-02-03T05:57:39  106          10          24        2
+    2014-02-03T05:57:49  108          10          25        2
     ...
 
 With the following semantics for the columns:
@@ -97,10 +101,10 @@ With the following semantics for the columns:
 
 So, for example, the first non-header line states that:
 
-* Some 112,000 financial transactions were emitted, in the sample interval ...
-* ... with a throughput of 11,000 transactions per sec.
-* And further, that 23MB have been emitted ... 
-* ... with a throughput of 2MB/sec in the sample interval.
+* Some 101,000 financial transactions were emitted, in the sample interval ...
+* ... with a throughput of 10,000 transactions per sec.
+* And further, that 23 MB have been emitted ... 
+* ... with a throughput of 2 MB/sec in the sample interval.
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
